@@ -1,0 +1,28 @@
+#!/bin/bash --login
+
+#SBATCH -p gpuA
+#SBATCH --gpus=1
+#SBATCH --ntasks-per-node=8
+#SBATCH -t 2-0
+
+
+
+# Load the software (modules) below this line ??????
+
+
+# Activate environment below this line ??????
+
+
+# Inform app how many cores to use
+export OMP_NUM_THREADS=$SLURM_NTASKS
+
+module purge 
+module load apps/binapps/conda/25.3.0 
+module load libs/cuda/12.8.1
+
+source activate erp
+export HF_HOME="/mnt/iusers01/msc-stu/hum-msc-data-sci-2024-2025/v13539ph/.cache/huggingface/"
+export MPLBACKEND='Agg'
+# Run your application. EG
+
+python stageB_ldm_finetune.py --dataset "BOLD5000"

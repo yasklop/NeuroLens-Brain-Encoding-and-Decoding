@@ -1,4 +1,4 @@
-# Brain encoding and decoding of vision: Semantic Control for fMRI-to-Image Synthesis
+# NeuroLens: Brain Encoding and Decoding of Vision
 
 <!-- Badges -->
 

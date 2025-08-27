@@ -15,7 +15,7 @@ import copy
 from config import Config_Generative_Model
 from dataset import create_Kamitani_dataset, create_BOLD5000_dataset
 from dc_ldm.ldm_for_fmri import fLDM
-from dc_ldm.sd15_for_fmri import fSD15  # Import SD1.5 adapter
+from dc_ldm.sd15_for_fmri_clipA import fSD15  
 from eval_metrics import get_similarity_metric
 
 

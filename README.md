@@ -124,7 +124,7 @@ Modify this import according to the model you wish to train:
     ```
 
 
-After modifying the import, run the training script as usual. If you run model with out CFG, set the scale to 0.0.
+After modifying the import, run the training script as usual. If you run the model with out CFG, set the scale to 0.0.
 ```
 
 ### 5. Inference & Evaluation

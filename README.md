@@ -154,22 +154,6 @@ val/generated_images
   <img src="assets/fig_2.png" width="90%">
 </p>
 
-
-## Citation
-
-If you use our work or code in your research, please cite our paper:
-
-```bibtex
-@article{your_lastname_2025_brain,
-  title   = {Brain encoding and decoding of vision: Semantic Control for fMRI-to-Image Synthesis},
-  author  = {[Your Name and Co-authors]},
-  journal = {arXiv preprint arXiv:...},
-  year    = {2025}
-}
-```
-
----
-
 ## Acknowledgements
 
-This work is built upon the codebases of [MinD-Vis]([Link to MinD-Vis GitHub]) and [Hugging Face Diffusers](https://github.com/huggingface/diffusers). We thank the creators of the BOLD5000 and GOD datasets for their invaluable contributions to the community.
+This work is built upon the codebases of MinD-Vis (https://github.com/zjc062/mind-vis) and [Hugging Face Diffusers](https://github.com/huggingface/diffusers). We thank the creators of the BOLD5000 and GOD datasets for their contributions to the community.

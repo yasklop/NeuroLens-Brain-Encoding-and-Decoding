@@ -120,17 +120,9 @@ class Config_Generative_Model:
         
         # SD1.5 configuration
         self.use_sd15 = True  # Set to False to use original LDM
-        self.sd15_model_id = "runwayml/stable-diffusion-v1-5"  # HuggingFace model ID
-
-        # Versatile Diffusion configuration
-        self.use_vd = False  # When True, use VersatileDiffusionDualGuidedPipeline
-        self.vd_model_id = "shi-labs/versatile-diffusion"
-        self.vd_cache_dir = os.path.join(self.root_path, 'pretrains/vd_cache')
-        self.vd_image_size = 512  # official image size
-        self.vd_num_inference_steps = 20
-        self.vd_guidance_scale = 3.5
-        self.vd_drop_rate_clsfree = 0.1
-        self.vd_trainable_unet_layers = "lora"  # "lora" or "no"
+        self.sd15_model_id = "runwayml/stable-diffusion-v1-5"  
+        self.cfg_scale = 3.0
+       
         
         # resume check util
         self.model_meta = None

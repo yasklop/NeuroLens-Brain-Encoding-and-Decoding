@@ -92,9 +92,9 @@ wandb login
 
 #### Training the Final Model (Encoder-Level alignment + CFG)
 
-To train our best-performing model, simply run the main training script:
+To train our best-performing model, simply run the main training script. You can specify the guidance scale using the `--cfg_scale` argument.:
 ```bash
-python stageB_SD_finetuned.py --dataset "BOLD5000" # or "GOD"
+python stageB_SD_finetuned.py --dataset "BOLD5000" --cfg_scale 3.0 # or dataset "GOD"
 ```
 
 #### Running Ablation Studies
@@ -124,7 +124,7 @@ Modify this import according to the model you wish to train:
     ```
 
 
-After modifying the import, run the training script as usual.
+After modifying the import, run the training script as usual. If you run model with out CFG, set the scale to 0.0.
 ```
 
 ### 5. Inference & Evaluation

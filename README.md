@@ -83,7 +83,7 @@ After downloading, please organize the files into the following directory struct
     └── finetuned.pth
 ```
 
-### 4. Training
+### 3. Training
 
 Before starting, log in to your Weights & Biases account for experiment tracking:
 ```bash
@@ -92,7 +92,7 @@ wandb login
 
 #### Training the Final Model (Encoder-Level alignment + CFG)
 
-To train our best-performing model, simply run the main training script. You can specify the guidance scale using the `--cfg_scale` argument.:
+To train our best-performing model, simply run the main training script. You can specify the guidance scale using the `--cfg_scale` argument.
 ```bash
 python stageB_SD_finetuned.py --dataset "BOLD5000" --cfg_scale 3.0 # or dataset "GOD"
 ```
@@ -125,26 +125,35 @@ Modify this import according to the model you wish to train:
 
 
 After modifying the import, run the training script as usual. If you run the model with out CFG, set the scale to 0.0.
+
+### 4. Inference and Evaluation
+After the 150th epoch, a full validation is performed every 25 epochs. This includes generating images for the entire test set and calculating all evaluation metrics. You can monitor the progress on your Weights & Biases dashboard.
+
+**Training Metrics Logged to Wandb:**
+```
+train/clip_loss
+train/loss_simple
+train/loss
+train/generated_grid
 ```
 
-### 5. Inference & Evaluation
-
-To generate images using our pre-trained model:
-
-```bash
-# Reconstruct images from the test set
-python inference.py \
-    --checkpoint ./checkpoints/our_final_model.pth \
-    --fmri_data_path ./data/bold5000/CSI1/test_fmri.npy \
-    --output_dir ./reconstructions
-
-# Evaluate the reconstructed images
-python evaluate.py \
-    --recon_dir ./reconstructions \
-    --gt_dir [Path to ground truth images]
+**Validation Metrics Logged to Wandb:**
 ```
-
+val/top-1-class (max)
+val/top-1-class
+val/ssim
+val/psm
+val/pcc
+val/mse
+val/loss
+val/generated_images
+```
 ---
+<!-- Add your final model architecture diagram here. -->
+<p align="center">
+  <img src="assets/fig_2.png" width="90%">
+</p>
+
 
 ## Citation
 

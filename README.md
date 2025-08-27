@@ -8,7 +8,7 @@
   <img src="assets/fig_1.png" width="90%">
 </p>
 <p align="center">
-  <em>Brain decoding from fMRI and visual reconstruction by our model.</em>
+  <em>Brain decoding and visual reconstruction from fMRI data by our model.</em>
 </p>
 
 ---
@@ -16,7 +16,7 @@
 ## Abstract
 
 <!-- Paste your final, polished abstract here. -->
-Reconstructing visual experiences from brain activity is a key challenge in neuroscience and Brain-Computer Interfaces...
+Reconstructing visual experiences from brain activity remains a fundamental challenge in both neuroscience and Brain-Computer Interface (BCI) research. The core difficulty in reconstructing images from functional magnetic resonance imaging (fMRI) data is producing high-quality images that accurately preserve semantic content, despite the inherently noisy and low-resolution characteristics of neural signals. Our framework addresses this challenge by leveraging a powerful pre-trained diffusion model as the generative backbone. To guide the generation process, we extract features from fMRI signals using a Masked Brain Modeling (MBM), align these features with a target visual-semantic space provided by Contrastive Language-Image Pre-training (CLIP), and enhance generative control using a Classifier-Free Guidance (CFG) mechanism. The mechanism works by jointly training the model on fMRI conditions and null inputs, thereby achieving an amplified guidance signal during inference, enforcing stricter adherence to the fMRI features. Compared to previous state-of-the-art method, our model achieves significant improvements, with a 23% increase in top-1 semantic classification accuracy and achieves superior results on visual fidelity metrics including PCC and SSIM. To further understand the contributions of individual components, we also conducted an ablation study that systematically evaluated different semantic alignment strategies and the role of generative control.
 
 ---
 
@@ -24,10 +24,7 @@ Reconstructing visual experiences from brain activity is a key challenge in neur
 
 <!-- Add your final model architecture diagram here. -->
 <p align="center">
-  <img src="[Link to your architecture diagram, e.g., assets/framework.png]" width="90%">
-</p>
-<p align="center">
-  <em>The overall architecture of our proposed fMRI-to-image synthesis framework.</em>
+  <img src="assets/fig_3.png" width="90%">
 </p>
 
 ---
@@ -40,44 +37,94 @@ We recommend using Conda for environment management.
 
 ```bash
 # 1. Clone this repository
-git clone [https://github.com/](https://github.com/)[Your-Username]/[Your-Repo-Name].git
-cd [Your-Repo-Name]
+git clone https://github.com/yasklop/NeuroLens-Brain-Encoding-and-Decoding.git
+
+cd NeuroLens-Brain-Encoding-and-Decoding
 
 # 2. Create and activate the Conda environment
 conda env create -f environment.yml
-conda activate your_env_name
+conda activate erp
 ```
 
-Alternatively, you can install the required packages using pip:
-```bash
-pip install -r requirements.txt
-```
 
 ### 2. Dataset Preparation
+The preprocessed **BOLD5000** and **Generic Object Decoding (GOD)** datasets, as well as the pre-trained **MBM encoder checkpoint**, can be downloaded from the official MinD-Vis FigShare repository:
 
-This research utilizes the BOLD5000 and Generic Object Decoding (GOD) datasets.
+* **[MinD-Vis Data and Models on FigShare](https://figshare.com/s/94cd778e6afafb00946e)**
 
-* **BOLD5000:** Please download the data from the [official BOLD5000 website](http://bold5000.org/).
-* **GOD:** Please download the data from the [official GOD page on OpenNeuro](https://openneuro.org/datasets/ds001246).
+After downloading, please organize the files into the following directory structure:
 
-After downloading, please follow the preprocessing scripts in the `scripts/` directory and place the final data under the `./data` directory.
+**Data Structure:**
+```
+./data/
+├── Kamitani/
+│   └── npz/
+│       ├── sbj_1.npz
+│       ├── ... (sbj_2 to sbj_5)
+│       ├── images_256.npz
+│       └── ... (label files)
+└── BOLD5000/
+    ├── BOLD5000_GLMsingle_ROI_betas/
+    │   └── py/
+    │       ├── CSI1_GLMbetas-TYPED-FITHRF-GLMDENOISE-RR_allses_LHEarlyVis.npy
+    │       └── ...
+    └── BOLD5000_Stimuli/
+        └── ...
+```
 
-### 3. Pre-trained Models
-
-* **Stable Diffusion v1.5:** The weights will be automatically downloaded from [Hugging Face](https://huggingface.co/runwayml/stable-diffusion-v1-5) on the first run.
-* **MBM Encoder:** Download our pre-trained MBM encoder from `[Link to your MBM encoder weights]` and place it in the `checkpoints/` directory.
-* **Our Final Model:** We also provide the final fine-tuned model weights. Download them from `[Link to your final model weights]` and place them in the `checkpoints/` directory.
+**Pre-trained Checkpoints Structure:**
+```
+./pretrains/
+├── GOD/
+│   ├── fmri_encoder.pth
+│   └── finetuned.pth
+└── BOLD5000/
+    ├── fmri_encoder.pth
+    └── finetuned.pth
+```
 
 ### 4. Training
 
-To train the model from scratch, use the following command. Please modify the parameters in the config file as needed.
-
+Before starting, log in to your Weights & Biases account for experiment tracking:
 ```bash
-# Train our best-performing model on BOLD5000 (Subject CSI1)
-python train.py \
-    --config configs/your_best_model_config.yaml \
-    --data_path ./data/bold5000/CSI1 \
-    --output_dir ./outputs
+wandb login
+```
+
+#### Training the Final Model (Encoder-Level alignment + CFG)
+
+To train our best-performing model, simply run the main training script:
+```bash
+python stageB_SD_finetuned.py --dataset "BOLD5000" # or "GOD"
+```
+
+#### Running Ablation Studies
+
+To replicate our ablation studies, you will need to manually modify the import statement at the top of the `stageB_SD_finetuned.py` script to switch between different model architectures.
+
+Open `stageB_SD_finetuned.py` and locate the following line:
+```python
+from dc_ldm.sd15_for_fmri_clipA import fSD15
+```
+
+Modify this import according to the model you wish to train:
+
+* **Model for CFG only:**
+    ```python
+    from dc_ldm.sd15_for_fmri import fSD15 
+    ```
+    
+* **Model without CFG:**
+    ```python
+    from dc_ldm_.sd15_for_fmri_noCFG import fSD15
+    ```
+
+* **Model For Generator-Level Alignment:**
+    ```python
+    from dc_ldm_.sd15_for_fmri_clipB import fSD15
+    ```
+
+
+After modifying the import, run the training script as usual.
 ```
 
 ### 5. Inference & Evaluation

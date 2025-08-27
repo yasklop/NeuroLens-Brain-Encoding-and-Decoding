@@ -84,7 +84,7 @@ class fSD15(pl.LightningModule):
     
     def __init__(self, metafile, num_voxels, device=torch.device('cpu'),
                  model_id="runwayml/stable-diffusion-v1-5",
-                 logger=None, ddim_steps=30, global_pool=False, use_time_cond=True,
+                 logger=None, ddim_steps=50, global_pool=False, use_time_cond=True,
                  cfg_scale: float = 3.0):
         super().__init__()
         
@@ -174,10 +174,10 @@ class fSD15(pl.LightningModule):
         
         # Loss weights 
         self.l_simple_weight = 1.0
-        self.original_elbo_weight = 0.0  # Match original LDM default
+        self.original_elbo_weight = 0.0  
         self.learn_logvar = False
         self.logvar_init = 0.0
-        self.clip_loss_weight = 0.05  # CLIP alignment loss weight
+        self.clip_loss_weight = 0.03  # CLIP alignment loss weight
     
         
         # Initialize VLB weights 
@@ -434,7 +434,7 @@ class fSD15(pl.LightningModule):
         print("Running full validation with image generation...")
         
         # Generate images from validation batch
-        grid, all_samples = self.generate_validation_images(batch, num_samples=4,limit=50)
+        grid, all_samples = self.generate_validation_images(batch, num_samples=4,limit=113)
         
         # Calculate evaluation metrics
         metric_values, metric_names = self.get_eval_metric(all_samples, avg=self.eval_avg)
@@ -870,7 +870,6 @@ class fSD15(pl.LightningModule):
         return images
     
     def get_image_clip_features(self, images):
-        """Extract CLIP features from real images following official approach"""
         # Convert from [-1,1] to [0,1] range (standard for CLIP)
         normalized_images = torch.clamp((images + 1.0) / 2.0, min=0.0, max=1.0)
         
@@ -897,7 +896,7 @@ class fSD15(pl.LightningModule):
         
     
     def compute_clip_loss(self, fmri_clip_features, image_clip_features):
-        """Compute CLIP alignment loss between fMRI and image features"""
+        
         # Normalize features
         fmri_features_norm = F.normalize(fmri_clip_features, p=2, dim=1)
         image_features_norm = F.normalize(image_clip_features, p=2, dim=1)

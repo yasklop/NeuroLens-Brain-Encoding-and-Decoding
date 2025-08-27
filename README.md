@@ -7,7 +7,9 @@
 <p align="center">
   <img src="assets/fig_1.png" width="90%">
 </p>
-
+<p align="center">
+  <em>Brain decoding and visual reconstruction from fMRI data by our model.</em>
+</p>
 
 ---
 
